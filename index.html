@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 引入 自己的css-->
+		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
+		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+		<script src="./js/jquery.js"></script>
+		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
+		<script  type="text/javascript" >
+			$( document ).bind( "mobileinit", function() {
+			   $.support.cors = true;   
+			   $.mobile.allowCrossDomainPages = true;
+			});
+			$(document).on("pageinit","#index_login",function(){
+				function signIn(){
+					$.ajax({
+						url:"http://10.74.16.153:8001/api/login_ajax.php",
+						data:{username:$('#username').val(),password:$('#password').val()},
+						type:'post',
+						dataType:'json',
+						success:function(data){
+							if(data.flag == "1"){
+								$.mobile.loading('hide');
+								$.mobile.changePage("#main", "fade"); 
+							}else{
+								$.mobile.loading('hide');
+								$("#login_test p").text(data.msg);	
+							}
+						}
+					});
+				}
+				// setup signin and signup button events
+				$("button").on("click", function(){
+					$.mobile.loading( 'show', {
+						text: '登录中...',
+						textVisible: true,
+						theme: 'a',
+						html: ""
+					});
+					signIn();
+				});
+			});
+
+		</script>
+        <title>欧华百货移动结算系统</title>
+    </head>
+    <body>
+	<div data-role="page" id="index_login">
+		<div data-role="header">
+			<h1>欧华百货移动结算系统</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div id="login_test">
+				<p>欧华百货移动结算系统</p>
+			</div>
+			<form id="form_login">
+            <input id="username" name="username" type="text" placeholder="username" />
+            <input id="password" name="password" type="password" placeholder="password" />
+            </form>
+			<button id="login" >登录</button>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="main">
+		<div data-role="header">
+			<h1>欧华百货移动结算系统</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div id="main">
+				<p>用户：</p>
+			</div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+    </body>
+</html>
