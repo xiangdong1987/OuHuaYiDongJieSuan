@@ -17,13 +17,15 @@
 			$(document).on("pageinit","#index_login",function(){
 				function signIn(){
 					$.ajax({
-						url:"http://10.74.16.153:8001/api/login_ajax.php",
-						data:{username:$('#username').val(),password:$('#password').val()},
+						url:"http://localhost/api/login_ajax.php",
+						data:{username:$('#username').val()},
 						type:'post',
 						dataType:'json',
 						success:function(data){
 							if(data.flag == "1"){
 								$.mobile.loading('hide');
+								//alert(data.flag);
+								$("#now_user span").text(data.custom.W_NameCn+"["+data.custom.W_NameIt+"]");	
 								$.mobile.changePage("#main", "fade"); 
 							}else{
 								$.mobile.loading('hide');
@@ -56,10 +58,7 @@
 			<div id="login_test">
 				<p>欧华百货移动结算系统</p>
 			</div>
-			<form id="form_login">
-            <input id="username" name="username" type="text" placeholder="username" />
-            <input id="password" name="password" type="password" placeholder="password" />
-            </form>
+				<input id="username" name="username" type="text" placeholder="P.iva" />
 			<button id="login" >登录</button>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
@@ -71,9 +70,13 @@
 			<h1>欧华百货移动结算系统</h1>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
-			<div id="main">
-				<p>用户：</p>
-			</div>
+        	<div class="user_info">
+                <div class="ui-grid-b">
+                  <div class="ui-block-a"><p id="now_user">当前用户：<span></span></p></div>
+                  <div class="ui-block-b"><button id="serch_custom">选择客户</button></div>
+                  <div class="ui-block-c"><p style=" margin-left:20px;">当前总计：</p></div>
+                </div>
+            </div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>
