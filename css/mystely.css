@@ -30,12 +30,18 @@ position: relative;
 text-shadow: #EEE 0px 1px 0px;
 }
 .user_info span{
-display: block;
-float:left;
+display:inline;
 -webkit-margin-before: 1em;
 -webkit-margin-after: 1em;
 -webkit-margin-start: 0px;
 -webkit-margin-end: 0px;
 }
-
-
+#error{ 
+color:#F00;
+}
+#good_info{ 
+display: none;	
+}
+#good_list span{
+margin-left:10px;
+}

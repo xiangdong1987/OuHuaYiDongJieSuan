@@ -15,6 +15,7 @@
 			   $.support.cors = true;   
 			   $.mobile.allowCrossDomainPages = true;
 			});
+			
 			$(document).on("pageinit","#index_login",function(){
 				islogin();
 				//检验本地存储
@@ -32,6 +33,17 @@
 						$.mobile.changePage("#index_login", "fade"); 
 					}
 				}
+				//统计产品并输出
+				function count_good(){
+					var good_list=JSON.parse(kget("good_list"));
+					//kclear();
+					if(good_list!=null){
+						$.each(good_list,function(){
+							$("#good_list").append("<span>"+this.NameIt+"</span><span>"+this.Barcode+"</span><span>"+this.S_final+"</span><span>"+this.numero+"</span>");
+						});
+					}
+				}
+				count_good();
 				function signIn(){
 					$.ajax({
 						url:"http://192.168.1.126/api/login_ajax.php",
@@ -73,6 +85,7 @@
 					signIn();
 				});
 				
+				
 			});
 
 		</script>
@@ -88,7 +101,7 @@
 				<p>欧华百货移动结算系统</p>
 			</div>
 				<input id="username" name="username" type="text" placeholder="P.iva" />
-			<button id="login" >登录</button>
+			<button id="login" >进入系统</button>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>
@@ -100,12 +113,26 @@
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
         	<div class="user_info">
-                <div class="ui-grid-b">
-                  <div class="ui-block-a"><span>当前用户：</span><span id="now_user"></span></div>
-                  <div class="ui-block-b"><span>P.IVA：</span><span id="now_piva"></span></div>
-                  <div class="ui-block-c"><span>当前总计：</span><span id="now_totle"></span><span>&euro;</span></div>
-                </div>
+			  <div><span>当前用户：</span><span id="now_user"></span></div>
+			  <div><span>P.IVA：</span><span id="now_piva"></span></div>
+			  <div><span>当前总计：</span><span><span id="now_totle"></span>&euro;</span></div>
             </div>
+			<div class="saomiao">
+				<a href="saomiao.html" data-ajax='false' data-role="button" data-transition="pop">开始扫描</a>
+			</div>
+			<div id="good_list"></div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="saomiao">
+		<div data-role="header">
+			<h1>货物扫描</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<input id="Barcode" name="Barcode" type="text" placeholder="Barcode" />
+			<input id="numero" name="numero" type="text" placeholder="Numero" />
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>

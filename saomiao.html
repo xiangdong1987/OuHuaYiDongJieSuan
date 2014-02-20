@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 引入 自己的css-->
+		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
+		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+		<script src="./js/jquery.js"></script>
+		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
+		<script src="./js/store.js"></script>
+		<script  type="text/javascript" >
+			$( document ).bind( "mobileinit", function() {
+			   $.support.cors = true;   
+			   $.mobile.allowCrossDomainPages = true;
+			});
+			$(document).on("pageinit","#saomiao",function(){
+				//检验本地存储
+				function islogin(){
+					var user = window.localStorage.getItem("user");
+					if(user != null){
+						$.mobile.changePage("#main", "fade"); 
+						var user=JSON.parse(kget("user"));
+						var now_piva=user.W_Piva;
+						var now_totle="0";
+						$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+						$("#now_piva").text(now_piva);
+						$("#now_totle").text(now_totle);
+					}else{
+						$.mobile.changePage("#index_login", "fade"); 
+					}
+				}
+				islogin();
+				$("#piu_uno").click(function(){
+					var num=$("#numero").val();
+					if(num==""){
+						num=0;
+					}
+					num=parseInt(num)+1;
+					$("#numero").val(num);
+				});
+				$("#meno_uno").click(function(){
+					var num=$("#numero").val();
+					if(num==""||num==0){
+						num=0;
+					}else{
+						num=parseInt(num)-1;
+					}
+					$("#numero").val(num);
+				});
+				//添加产品
+				$("#save_good").click(function(){
+					var barcode=$("#Barcode").val();
+					var numero=$("#numero").val();
+					var good_list=new Array();
+					if(barcode=="" ||numero=="" ||numero==0){
+						$("#error").text("条码和数字不能为空，并且数字不能为0。");
+					}else{
+						
+						good_list_old=JSON.parse(kget("good_list"));
+						//alert(good);
+						var flag=false;
+						if(good_list_old != null){
+							for(var i=0; i < good_list_old.length; i++ ){
+								if(good_list_old[i].Barcode == barcode){
+									good_list_old[i].numero=parseInt(good_list_old[i].numero)+parseInt(numero);
+									flag=true;
+									break;
+								}
+							}
+							if(flag==false){
+								var good=JSON.parse(kget("goods"));
+								good.numero=numero;
+								good_list_old[good_list_old.length+1]=good;
+							}
+							kset("good_list",JSON.stringify(good_list_old));
+						}else{
+							var good=JSON.parse(kget("goods"));
+							//alert(good);
+							good.numero=numero;
+							good_list[0]=good;
+							kset("good_list",JSON.stringify(good_list));
+						}
+						
+						$("#error").text("添加成功。");
+					}
+					
+				});
+				//条码框失去焦点
+				$("#Barcode").blur(function(){
+					var Barcode_get=$('#Barcode').val();
+					if(Barcode!=""){
+						//获取产品信息
+						$.mobile.loading( 'show', {
+							text: '产品搜索中...',
+							textVisible: true,
+							theme: 'a',
+							html: ""
+						});
+						$.ajax({
+							url:"http://192.168.1.126/api/good_ajax.php",
+							data:{Barcode:Barcode_get},
+							type:'post',
+							dataType:'json',
+							success:function(data){
+								if(data.flag == "1"){
+									$.mobile.loading('hide');
+									//kset("user",JSON.stringify(data.custom));
+									//$.mobile.changePage("#main", "fade"); 
+									//var user=JSON.parse(kget("user"));
+									$("#good_info").show();
+									$("#good_name").text(data.good.NameCn+"["+data.good.NameIt+"]");	
+									$("#good_price").text(data.good.S_final);
+									kset("goods",JSON.stringify(data.good));
+								}else{
+									$("#good_info").hide();
+									$.mobile.loading('hide');
+									$("#error").text(data.msg);	
+								}
+							}
+						});
+					}
+				});
+			});
+
+		</script>
+        <title>欧华百货移动结算系统</title>
+    </head>
+    <body>
+	<div data-role="page" id="saomiao">
+		<div data-role="header">
+			<a href="index.html" data-ajax='false' data-role="button">首页</a>
+			<h1>货物扫描</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div id="error"></div>
+			<div>
+				<input id="Barcode" name="barcode" type="text" placeholder="Barcode" />
+				<input id="numero" name="numero" type="text" placeholder="Numero" />
+			</div>
+			<div class="sao_button">
+				<a data-role="button" data-inline="true" id="piu_uno">+</a>
+				<a data-role="button" data-inline="true" id="save_good" >添加</a>
+				<a data-role="button" data-inline="true" id="meno_uno">-</a>
+			</div>
+			<div id="good_info">
+				<div><span>商品名称：</span><span id="good_name"></span></div>
+				<div><span>商品价格：</span><span id="good_price"></span></span>&euro;</span></div>
+            </div>	
+		</div><!-- /content -->
+	</div><!-- /page -->
+    </body>
+</html>
