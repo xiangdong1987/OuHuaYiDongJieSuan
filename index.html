@@ -9,24 +9,52 @@
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
 		<script src="./js/jquery.js"></script>
 		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
+		<script src="./js/store.js"></script>
 		<script  type="text/javascript" >
 			$( document ).bind( "mobileinit", function() {
 			   $.support.cors = true;   
 			   $.mobile.allowCrossDomainPages = true;
 			});
 			$(document).on("pageinit","#index_login",function(){
+				islogin();
+				//检验本地存储
+				function islogin(){
+					var user = window.localStorage.getItem("user");
+					if(user != null){
+						$.mobile.changePage("#main", "fade"); 
+						var user=JSON.parse(kget("user"));
+						var now_piva=user.W_Piva;
+						var now_totle="0";
+						$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+						$("#now_piva").text(now_piva);
+						$("#now_totle").text(now_totle);
+					}else{
+						$.mobile.changePage("#index_login", "fade"); 
+					}
+				}
 				function signIn(){
 					$.ajax({
-						url:"http://localhost/api/login_ajax.php",
+						url:"http://192.168.1.126/api/login_ajax.php",
 						data:{username:$('#username').val()},
 						type:'post',
 						dataType:'json',
 						success:function(data){
 							if(data.flag == "1"){
 								$.mobile.loading('hide');
-								//alert(data.flag);
-								$("#now_user span").text(data.custom.W_NameCn+"["+data.custom.W_NameIt+"]");	
+								//解析json
+								//JSON.parse(students);/
+								//转化字符串
+								//JSON.stringify(students);
+								//存储用户信息
+								kset("user",JSON.stringify(data.custom));
+								//kclear();
 								$.mobile.changePage("#main", "fade"); 
+								var user=JSON.parse(kget("user"));
+								var now_piva=user.W_Piva;
+								var now_totle="0";
+								$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+								$("#now_piva").text(now_piva);
+								$("#now_totle").text(now_totle);
 							}else{
 								$.mobile.loading('hide');
 								$("#login_test p").text(data.msg);	
@@ -44,6 +72,7 @@
 					});
 					signIn();
 				});
+				
 			});
 
 		</script>
@@ -72,9 +101,9 @@
 		<div role="main" class="ui-content">
         	<div class="user_info">
                 <div class="ui-grid-b">
-                  <div class="ui-block-a"><p id="now_user">当前用户：<span></span></p></div>
-                  <div class="ui-block-b"><button id="serch_custom">选择客户</button></div>
-                  <div class="ui-block-c"><p style=" margin-left:20px;">当前总计：</p></div>
+                  <div class="ui-block-a"><span>当前用户：</span><span id="now_user"></span></div>
+                  <div class="ui-block-b"><span>P.IVA：</span><span id="now_piva"></span></div>
+                  <div class="ui-block-c"><span>当前总计：</span><span id="now_totle"></span><span>&euro;</span></div>
                 </div>
             </div>
 		</div><!-- /content -->

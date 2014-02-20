@@ -29,5 +29,13 @@ line-height: 20.8px;
 position: relative;
 text-shadow: #EEE 0px 1px 0px;
 }
+.user_info span{
+display: block;
+float:left;
+-webkit-margin-before: 1em;
+-webkit-margin-after: 1em;
+-webkit-margin-start: 0px;
+-webkit-margin-end: 0px;
+}
 
 
