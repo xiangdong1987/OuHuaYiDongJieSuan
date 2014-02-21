@@ -42,9 +42,18 @@ color:#F00;
 #good_info{ 
 display: none;	
 }
-#good_list span{
-margin-left:10px;
+#good_list{
+margin-top:20px; margin-bottom:20px;
 }
+#good_list span{
+margin-left:10px; 
+}
+.goodright{ 
+height:70px; width:60%; float:left;
+}
+.goodleft{height:70px; width:40%; float:left}
+.shanchu{height:70px; width:40%; float:left; display:none;}
+.shanchu img{float:right}
 .ui-grid-c .ui-block-a{
 	width:40%;
 }
@@ -60,5 +69,5 @@ margin-left:10px;
 #jiesuan{
 	background-color: #FF6A6A;
 	color: #FFF;
-	font-size:24px;
+	font-size:15px;
 }

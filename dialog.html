@@ -3,43 +3,13 @@
     <head>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
 		<!-- 引入 自己的css-->
 		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
 		<script src="./js/jquery.js"></script>
 		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
 		<script src="./js/store.js"></script>
-		<script  type="text/javascript" >
-			$( document ).bind( "mobileinit", function() {
-			   $.support.cors = true;   
-			   $.mobile.allowCrossDomainPages = true;
-			});
-			$(document).on("pageinit","#main",function(){
-				//统计产品并输出
-				function count_good(){
-					var good_list=JSON.parse(kget("good_list"));
-					if(good_list!=null){
-						$.each(good_list,function(){
-							var xiaoji=this.numero*this.S_final;
-							$(".ui-grid-c").append("<div class='ui-block-a'><div class='ui-bar ui-bar-a' style='pading:0;'>"+this.NameIt+"</div></div><div class='ui-block-b'><div class='ui-bar ui-bar-a'>"+this.S_final+"</div></div><div class='ui-block-c'><div class='ui-bar ui-bar-a'>"+this.numero+"</div></div><div class='ui-block-d'><div class='ui-bar ui-bar-a'>"+xiaoji+"</div></div>");
-						});
-					}
-					var user=JSON.parse(kget("user"));
-					var now_piva=user.W_Piva;
-					var now_totle="0";
-					$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
-					$("#now_piva").text(now_piva);
-					$("#now_totle").text(now_totle);
-				}
-				count_good();			
-				$("#logout").click(function(){
-					kclear();
-					alert("清楚数据成功！");
-					//$.mobile.changePage("#index_login",{ transition: "slideup"}); 
-				});
-			});
-		</script>
         <title>欧华百货移动结算系统</title>
     </head>
     <body>
