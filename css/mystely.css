@@ -45,3 +45,20 @@ display: none;
 #good_list span{
 margin-left:10px;
 }
+.ui-grid-c .ui-block-a{
+	width:40%;
+}
+.ui-grid-c .ui-block-b{
+	width:20%;
+}
+.ui-grid-c .ui-block-c{
+	width:20%;
+}
+.ui-grid-c .ui-block-d{
+	width:20%;
+}
+#jiesuan{
+	background-color: #FF6A6A;
+	color: #FFF;
+	font-size:24px;
+}

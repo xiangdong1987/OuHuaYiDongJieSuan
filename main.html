@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<!-- 引入 自己的css-->
+		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
+		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+		<script src="./js/jquery.js"></script>
+		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
+		<script src="./js/store.js"></script>
+		<script  type="text/javascript" >
+			$( document ).bind( "mobileinit", function() {
+			   $.support.cors = true;   
+			   $.mobile.allowCrossDomainPages = true;
+			});
+			$(document).on("pageinit","#main",function(){
+				//统计产品并输出
+				function count_good(){
+					var good_list=JSON.parse(kget("good_list"));
+					if(good_list!=null){
+						$.each(good_list,function(){
+							var xiaoji=this.numero*this.S_final;
+							$(".ui-grid-c").append("<div class='ui-block-a'><div class='ui-bar ui-bar-a' style='pading:0;'>"+this.NameIt+"</div></div><div class='ui-block-b'><div class='ui-bar ui-bar-a'>"+this.S_final+"</div></div><div class='ui-block-c'><div class='ui-bar ui-bar-a'>"+this.numero+"</div></div><div class='ui-block-d'><div class='ui-bar ui-bar-a'>"+xiaoji+"</div></div>");
+						});
+					}
+					var user=JSON.parse(kget("user"));
+					var now_piva=user.W_Piva;
+					var now_totle="0";
+					$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+					$("#now_piva").text(now_piva);
+					$("#now_totle").text(now_totle);
+				}
+				count_good();			
+				$("#logout").click(function(){
+					kclear();
+					alert("清楚数据成功！");
+					//$.mobile.changePage("#index_login",{ transition: "slideup"}); 
+				});
+			});
+		</script>
+        <title>欧华百货移动结算系统</title>
+    </head>
+    <body>
+	<div data-role="page" id="main">
+		<div data-role="header">
+			<h1>欧华百货移动结算系统</h1>
+			<a id="logout" href="#index_login" data-ajax='false' data-icon="delete" class="ui-btn-right" data-role="button">退出系统</a>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+        	<div class="user_info">
+			  <div><span>当前用户：</span><span id="now_user"></span></div>
+			  <div><span>P.IVA：</span><span id="now_piva"></span></div>
+			  <div><span>当前总计：</span><span><span id="now_totle"></span>&euro;</span></div>
+            </div>
+			<div class="saomiao">
+				<a href="saomiao.html" data-ajax='false' data-role="button" data-transition="pop">开始扫描</a>
+			</div>
+			<div id="good_list">
+				<div class="ui-grid-c">
+					<div class="ui-block-a"><div class="ui-bar ui-bar-a">名称</div></div>
+					<div class="ui-block-b"><div class="ui-bar ui-bar-a">单价</div></div>
+					<div class="ui-block-c"><div class="ui-bar ui-bar-a">数量</div></div>
+					<div class="ui-block-d"><div class="ui-bar ui-bar-a">小计</div></div>
+				</div><!-- /grid-c -->
+			</div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+    </body>
+</html>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
 		<!-- 引入 自己的css-->
 		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
@@ -36,12 +36,15 @@
 				//统计产品并输出
 				function count_good(){
 					var good_list=JSON.parse(kget("good_list"));
-					//kclear();
+					var totle=0;
 					if(good_list!=null){
 						$.each(good_list,function(){
-							$("#good_list").append("<span>"+this.NameIt+"</span><span>"+this.Barcode+"</span><span>"+this.S_final+"</span><span>"+this.numero+"</span>");
+							var xiaoji=this.numero*this.S_final;
+							$(".ui-grid-c").append("<div class='ui-block-a'><div class='ui-bar ui-bar-a' style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div></div><div class='ui-block-b'><div class='ui-bar ui-bar-a'>"+this.S_final+"</div></div><div class='ui-block-c'><div class='ui-bar ui-bar-a'>"+this.numero+"</div></div><div class='ui-block-d'><div class='ui-bar ui-bar-a'>"+xiaoji.toFixed(2)+"</div></div>");
+							totle=totle+xiaoji;
 						});
 					}
+					$("#now_totle").text(totle.toFixed(2));
 				}
 				count_good();
 				function signIn(){
@@ -84,10 +87,14 @@
 					});
 					signIn();
 				});
-				
+
 				
 			});
-
+			$(document).on("pageinit","#index_login",function(){
+				$("#logout").click(function(){
+					kclear();
+				});
+			});
 		</script>
         <title>欧华百货移动结算系统</title>
     </head>
@@ -110,6 +117,7 @@
 	<div data-role="page" id="main">
 		<div data-role="header">
 			<h1>欧华百货移动结算系统</h1>
+			<a id="logout" href="index.html" data-ajax='false' data-icon="delete" class="ui-btn-right" data-role="button">退出系统</a>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
         	<div class="user_info">
@@ -120,7 +128,17 @@
 			<div class="saomiao">
 				<a href="saomiao.html" data-ajax='false' data-role="button" data-transition="pop">开始扫描</a>
 			</div>
-			<div id="good_list"></div>
+			<div id="good_list">
+				<div class="ui-grid-c">
+					<div class="ui-block-a"><div class="ui-bar ui-bar-a">名称</div></div>
+					<div class="ui-block-b"><div class="ui-bar ui-bar-a">单价</div></div>
+					<div class="ui-block-c"><div class="ui-bar ui-bar-a">数量</div></div>
+					<div class="ui-block-d"><div class="ui-bar ui-bar-a">小计</div></div>
+				</div><!-- /grid-c -->
+			</div>
+			<div>
+				<a  id="jiesuan" data-role="button" data-transition="pop">结算</a>
+			</div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>
