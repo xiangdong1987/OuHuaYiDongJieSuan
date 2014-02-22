@@ -57,7 +57,6 @@
 					if(barcode=="" ||numero=="" ||numero==0){
 						$("#error").text("条码和数字不能为空，并且数字不能为0。");
 					}else{
-						
 						good_list_old=JSON.parse(kget("good_list"));
 						//alert(good);
 						var flag=false;
@@ -99,9 +98,10 @@
 							theme: 'a',
 							html: ""
 						});
+						var config=JSON.parse(kget("config"));
 						$.ajax({
-							url:"http://192.168.1.126/api/good_ajax.php",
-							data:{Barcode:Barcode_get},
+							url:"http://"+config[0]+"/api/good_ajax.php",
+							data:{Barcode:Barcode_get,config:JSON.stringify(config)},
 							type:'post',
 							dataType:'json',
 							success:function(data){

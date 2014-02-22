@@ -17,8 +17,16 @@
 			});
 			
 			$(document).on("pageinit","#index_login",function(){
-				islogin();
-				//检验本地存储
+				isconfig();
+				function isconfig(){
+					var config = window.localStorage.getItem("config");
+					if(config == null){
+						$.mobile.changePage("#dialog_c",{role:"dialog"}); 
+					}else{
+						islogin();
+					}
+				}
+				//登录验证
 				function islogin(){
 					var user = window.localStorage.getItem("user");
 					if(user != null){
@@ -49,31 +57,38 @@
 				}
 				count_good();
 				function signIn(){
+					//获取连接数据
+					var config=JSON.parse(kget("config"));
 					$.ajax({
-						url:"http://192.168.1.126/api/login_ajax.php",
-						data:{username:$('#username').val()},
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{username:$('#username').val(),config:JSON.stringify(config)},
 						type:'post',
 						dataType:'json',
 						success:function(data){
-							if(data.flag == "1"){
-								$.mobile.loading('hide');
-								//解析json
-								//JSON.parse(students);/
-								//转化字符串
-								//JSON.stringify(students);
-								//存储用户信息
-								kset("user",JSON.stringify(data.custom));
-								//kclear();
-								$.mobile.changePage("#main", "fade"); 
-								var user=JSON.parse(kget("user"));
-								var now_piva=user.W_Piva;
-								var now_totle="0";
-								$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
-								$("#now_piva").text(now_piva);
-								$("#now_totle").text(now_totle);
+							if(data.flag_conect==1){
+								if(data.flag == "1"){
+									$.mobile.loading('hide');
+									//解析json
+									//JSON.parse(students);/
+									//转化字符串
+									//JSON.stringify(students);
+									//存储用户信息
+									kset("user",JSON.stringify(data.custom));
+									//kclear();
+									$.mobile.changePage("#main", "fade"); 
+									var user=JSON.parse(kget("user"));
+									var now_piva=user.W_Piva;
+									var now_totle="0";
+									$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+									$("#now_piva").text(now_piva);
+									$("#now_totle").text(now_totle);
+								}else{
+									$.mobile.loading('hide');
+									$("#login_test p").text(data.msg);	
+								}
 							}else{
 								$.mobile.loading('hide');
-								$("#login_test p").text(data.msg);	
+								$("#login_test p").text("服务器连接数据库失败，请检查数据库配置。");	
 							}
 						}
 					});
@@ -116,8 +131,11 @@
 				});
 			});
 			$(document).on("pageinit","#index_login",function(){
+				//登出代码
 				$("#logout").click(function(){
-					kclear();
+					kremove("user");
+					kremove("good_list");
+					kremove("goods");
 				});
 			});
 		</script>
@@ -126,6 +144,7 @@
     <body>
 	<div data-role="page" id="index_login">
 		<div data-role="header">
+			<a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>
 			<h1>欧华百货移动结算系统</h1>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
@@ -175,6 +194,20 @@
         	<div>
                 <a id="dialog_si" href="index.html" data-ajax="false" class="ui-btn ui-btn-inline">确定</a>
                 <a href="#main" class="ui-btn ui-btn-inline">取消</a>
+            </div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="dialog_c">
+		<div data-role="header">
+			<h1>配置</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+        	<div>设备必须初始化，请点击进去配置页面!</div>
+        	<div>
+                <a  href="config.html" data-ajax="false" class="ui-btn ui-btn-inline">进入</a>
             </div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">

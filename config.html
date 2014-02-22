@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<!-- 引入 自己的css-->
+		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
+		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+		<script src="./js/jquery.js"></script>
+		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
+		<script src="./js/store.js"></script>
+		<script  type="text/javascript" >
+			$( document ).bind( "mobileinit", function() {
+			   $.support.cors = true;   
+			   $.mobile.allowCrossDomainPages = true;
+			});
+			$(document).on("pageinit","#config",function(){
+				//加载当前配置
+				load_config();
+				function load_config(){
+					var config = JSON.parse(kget("config"));
+					if(config != null){
+						$("#ip").val(config[0]);
+						//alert(config[0]);
+						$("#loginname").val(config[1]);
+						$("#password").val(config[2]);
+						$("#dbname").val(config[3]);
+					}
+				}
+				
+				$("#save_config").click(function(){
+					var ip=$("#ip").val();
+					var loginname=$("#loginname").val();
+					var password=$("#password").val();
+					var dbname=$("#dbname").val();
+					if(ip!=""&&loginname!=""&&password!=""&&dbname!=""){
+						var config= new Array();
+						config["0"]=ip;
+						config["1"]=loginname;
+						config["2"]=password;
+						config["3"]=dbname;
+						//alert(JSON.stringify(config));
+						kset("config",JSON.stringify(config));
+						$("#error").text("保存成功");
+					}else{
+						$("#error").text("所有项目为必填字段，否则无法连接数据库。");
+					}
+				});
+				function connect_test(){
+					//获取连接数据
+					var config=JSON.parse(kget("config"));
+					$.ajax({
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{config:JSON.stringify(config)},
+						type:'post',
+						dataType:'json',
+						success:function(data){
+							if(data.flag_conect==1){
+								$.mobile.loading('hide');
+								$("#error").text("配置成功，数据库连接成功。");
+							}else{
+								$.mobile.loading('hide');
+								$("#error").text("服务器连接数据库失败，请检查数据库配置。");	
+							}
+						}
+					});
+				}
+			});
+
+		</script>
+        <title>欧华百货移动结算系统</title>
+    </head>
+    <body>
+	<div data-role="page" id="config">
+		<script type="text/javascript">
+			
+		</script>
+		<div data-role="header">
+			<a href="index.html" data-ajax='false' data-role="button">返回</a>
+			<h1>设备设置</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div id="error"></div>
+			<div>
+				<input id="ip" name="ip" type="text" value="" placeholder="服务器ip" />
+				<input id="loginname" name="loginname" type="text" value="" placeholder="数据库登录名" />
+				<input id="password" name="password" type="text" value="" placeholder="数据库密码" />
+				<input id="dbname" name="dbname" type="text" value="" placeholder="数据库名称" />
+				<a data-role="button" data-inline="true" id="save_config" >保存</a>
+			</div>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    </body>
+</html>
