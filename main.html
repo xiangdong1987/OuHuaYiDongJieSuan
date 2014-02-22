@@ -16,33 +16,17 @@
 			   $.mobile.allowCrossDomainPages = true;
 			});
 			
-			$(document).on("pageinit","#index_login",function(){
-				isconfig();
-				function isconfig(){
-					var config = window.localStorage.getItem("config");
-					if(config == null){
-						$.mobile.changePage("#dialog_c",{role:"dialog"}); 
-					}else{
-						islogin();
-					}
-				}
-				//登录验证
-				function islogin(){
-					var user = window.localStorage.getItem("user");
-					if(user != null){
-						//跳转
-						//$.mobile.changePage("main.html", "fade"); 
-						window.location.href="main.html"; 
-						var user=JSON.parse(kget("user"));
-						var now_piva=user.W_Piva;
-						var now_totle="0";
-						$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
-						$("#now_piva").text(now_piva);
-						$("#now_totle").text(now_totle);
-					}else{
-						$.mobile.changePage("#index_login", "fade"); 
-					}
-				}
+			$(document).on("pageinit","#main",function(){
+				//监控数字键
+				 $("#numero").focus(function() {
+					 // 绑定键盘按下事件
+					$(document).keydown(function(e) {
+						if(e.which == 13){
+							$("#Barcode").focus();
+						}
+					});
+				 });
+	
 				//统计产品并输出
 				function count_good(){
 					var good_list=JSON.parse(kget("good_list"));
@@ -56,56 +40,10 @@
 						});
 					}
 					$("#now_totle").text(totle.toFixed(2));
+					var user=JSON.parse(kget("user"));
+					$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
 				}
 				count_good();
-				function signIn(){
-					//获取连接数据
-					var config=JSON.parse(kget("config"));
-					$.ajax({
-						url:"http://"+config[0]+"/api/login_ajax.php",
-						data:{username:$('#username').val(),config:JSON.stringify(config)},
-						type:'post',
-						dataType:'json',
-						success:function(data){
-							if(data.flag_conect==1){
-								if(data.flag == "1"){
-									$.mobile.loading('hide');
-									//解析json
-									//JSON.parse(students);/
-									//转化字符串
-									//JSON.stringify(students);
-									//存储用户信息
-									kset("user",JSON.stringify(data.custom));
-									//kclear();
-									window.location.href="main.html"; 
-									//$.mobile.changePage("#main", "fade"); 
-									var user=JSON.parse(kget("user"));
-									var now_piva=user.W_Piva;
-									var now_totle="0";
-									$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
-									$("#now_piva").text(now_piva);
-									$("#now_totle").text(now_totle);
-								}else{
-									$.mobile.loading('hide');
-									$("#login_test p").text(data.msg);	
-								}
-							}else{
-								$.mobile.loading('hide');
-								$("#login_test p").text("服务器连接数据库失败，请检查数据库配置。");	
-							}
-						}
-					});
-				}
-				// setup signin and signup button events
-				$("button").on("click", function(){
-					$.mobile.loading( 'show', {
-						text: '登录中...',
-						textVisible: true,
-						theme: 'a',
-						html: ""
-					});
-					signIn();
-				});
 				$("li").on("swipeleft",function(){
 				  	//$.mobile.changePage( "#dialog", { role: "dialog" } );
 					$("#tiaoma").text(this.id);
@@ -185,7 +123,7 @@
 										$("#Barcode").val("");
 										$("#numero").val("");
 										//kset("goods",JSON.stringify(data.good));
-										window.location.href="index.html"; 
+										window.location.href="main.html"; 
 									}									
 								}else{
 									$("#good_info").hide();
@@ -199,36 +137,63 @@
 				});
 				
 			});
-
+			$(document).on("pageinit","#main",function(){
+				//登出代码
+				$("#logout").click(function(){
+					kremove("user");
+					kremove("good_list");
+					kremove("goods");
+				});
+			});
 		</script>
         <title>欧华百货移动结算系统</title>
     </head>
     <body>
-	<div data-role="page" id="index_login">
+	<div data-role="page" id="main">
 		<div data-role="header">
-			<a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>
-			<h1>欧华百货移动结算系统</h1>
+			<div class="user_info">
+			  <div><span>用户：</span><span id="now_user"></span></div>
+            </div>
+			<div class="saomiao" >
+				<input id="numero" name="numero" type="text" data-role="none" placeholder="Numero" style="float:left;width:48%" />
+				<input id="Barcode" name="barcode" type="text" data-role="none" placeholder="Barcode" style="float:left;width:48%"/>
+				<div class="clear"></div>
+			</div>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
-			<div id="login_test">
-				<p>欧华百货移动结算系统</p>
+			<div id="good_list" >
+				<ul id="good_view" data-role="listview">
+
+				</ul>
 			</div>
-				<input id="username" name="username" type="text" placeholder="P.iva" />
-			<button id="login" >进入系统</button>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+				<div class="foot_b"><a   id="jiesuan" data-role="button" data-transition="pop" >结算</a></div>
+				<div class="foot_b" style="margin-top:15px;">总计：<span id="now_totle"></span>&euro;</div>
+				<div class="foot_b" style="float:right;"><a  class="foot_b" id="logout" href="index.html" data-ajax='false' data-icon="delete" class="ui-btn-right" data-role="button">退出系统</a></div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="dialog">
+		<div data-role="header">
+			<h1>是否确定删除？</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+        	<div>是否确定删除<span id="tiaoma"></span>？</div>
+        	<div>
+                <a id="dialog_si" href="index.html" data-ajax="false" class="ui-btn ui-btn-inline">确定</a>
+                <a href="#main" class="ui-btn ui-btn-inline">取消</a>
+            </div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>
 		</div><!-- /footer -->
 	</div><!-- /page -->
-	<div data-role="page" id="dialog_c">
+	<div data-role="page" id="dialog_e">
 		<div data-role="header">
-			<h1>配置</h1>
+			<h1>错误</h1>
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
-        	<div>设备必须初始化，请点击进去配置页面!</div>
-        	<div>
-                <a  href="config.html" data-ajax="false" class="ui-btn ui-btn-inline">进入</a>
-            </div>
+			<div id="error"></div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>

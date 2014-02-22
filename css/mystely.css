@@ -43,16 +43,16 @@ color:#F00;
 display: none;	
 }
 #good_list{
-margin-top:20px; margin-bottom:20px;
+margin-top:20px; margin-bottom:20px; margin-left:20px;
 }
 #good_list span{
 margin-left:10px; 
 }
 .goodright{ 
-height:70px; width:60%; float:left;
+height:70px; width:60%; float:left;margin
 }
-.goodleft{height:70px; width:40%; float:left}
-.shanchu{height:70px; width:40%; float:left; display:none;}
+.goodleft{height:70px; width:39%; float:left}
+.shanchu{height:70px; width:39%; float:left; display:none;}
 .shanchu img{float:right}
 .ui-grid-c .ui-block-a{
 	width:40%;
@@ -66,8 +66,15 @@ height:70px; width:60%; float:left;
 .ui-grid-c .ui-block-d{
 	width:20%;
 }
-#jiesuan{
-	background-color: #FF6A6A;
-	color: #FFF;
-	font-size:15px;
+.foot_b{
+	color: #000;
+	font-size:12px;
+	float:left;
+}
+.saomiao input{
+	width:50%;
+	
+}
+.clear{
+	clear:both;
 }
