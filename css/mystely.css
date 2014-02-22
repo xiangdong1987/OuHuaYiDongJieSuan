@@ -43,34 +43,37 @@ color:#F00;
 display: none;	
 }
 #good_list{
-margin-top:20px; margin-bottom:20px; margin-left:20px;
+font-size:12px; color: #666
+}
+#good_list ul il{
+background-color: #80FF80;	
 }
 #good_list span{
 margin-left:10px; 
 }
 .goodright{ 
-height:70px; width:60%; float:left;margin
+height:50px; width:60%; float:left;
+border-style:solid;
+border-width:1px;
+border-color: #fff;
+background-color: #80FF80;	
 }
-.goodleft{height:70px; width:39%; float:left}
-.shanchu{height:70px; width:39%; float:left; display:none;}
+.goodleft{
+height:50px; width:39%; float:left;
+border-style:solid;
+border-width:1px;
+border-color: #fff;
+background-color: #80FF80;	
+}
+.shanchu{height:50px; width:39%; float:left; display:none;}
 .shanchu img{float:right}
-.ui-grid-c .ui-block-a{
-	width:40%;
-}
-.ui-grid-c .ui-block-b{
-	width:20%;
-}
-.ui-grid-c .ui-block-c{
-	width:20%;
-}
-.ui-grid-c .ui-block-d{
-	width:20%;
-}
+
 .foot_b{
 	color: #000;
 	font-size:12px;
 	float:left;
 }
+
 .saomiao input{
 	width:50%;
 	

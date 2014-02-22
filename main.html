@@ -35,7 +35,7 @@
 						$.each(good_list,function(){
 							var xiaoji=this.numero*this.S_final;
 							//$("#good_view").append("<div class='ui-block-a'><div class='ui-bar ui-bar-a' style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div></div><div class='ui-block-b'><div class='ui-bar ui-bar-a'>"+this.S_final+"</div></div><div class='ui-block-c'><div class='ui-bar ui-bar-a'>"+this.numero+"</div></div><div class='ui-block-d'><div class='ui-bar ui-bar-a'>"+xiaoji.toFixed(2)+"</div></div>");
-							$("#good_view").append("<li id='"+this.Barcode+"'><div class='goodright'><div>"+this.Barcode+"</div><div style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div><div>"+this.NameCn+"</div></div><div id='d_"+this.Barcode+"' class='goodleft'><div>价格："+this.S_final+"</div><div>数量："+this.numero+"</div><div>小计："+xiaoji.toFixed(2)+"</div></div><div id='i"+this.Barcode+"' class='shanchu'><a href='#dialog'><img src='./img/delete.png' width='55px' height='70px'/></a></div></li>");
+							$("#good_view").append("<li id='"+this.Barcode+"'><div class='goodright'><div>"+this.Barcode+"</div><div style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div><div>"+this.NameCn+"</div></div><div id='d_"+this.Barcode+"' class='goodleft'><div>价格："+this.S_final+"</div><div>数量："+this.numero+"</div><div>小计："+xiaoji.toFixed(2)+"</div></div><div id='i"+this.Barcode+"' class='shanchu'><a href='#dialog'><img src='./img/delete.png' width='39px' height='50px'/></a></div></li>");
 							totle=totle+xiaoji;
 						});
 					}
@@ -149,8 +149,8 @@
         <title>欧华百货移动结算系统</title>
     </head>
     <body>
-	<div data-role="page" id="main">
-		<div data-role="header">
+	<div data-role="page" id="main"style="background-color: #80FF80;" >
+		<div data-role="header"  data-position="fixed">
 			<div class="user_info">
 			  <div><span>用户：</span><span id="now_user"></span></div>
             </div>
@@ -160,7 +160,7 @@
 				<div class="clear"></div>
 			</div>
 		</div><!-- /header -->
-		<div role="main" class="ui-content">
+		<div role="main" class="ui-content" >
 			<div id="good_list" >
 				<ul id="good_view" data-role="listview">
 
