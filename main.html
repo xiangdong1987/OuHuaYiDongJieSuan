@@ -66,7 +66,7 @@
 							if(good_list.length==1){
 								good_list=null;	
 							}else{
-								good_list=good_list.splice(i-1,1);
+								good_list.splice(i,1);
 							} 
 						 }
 					});
@@ -146,6 +146,32 @@
 					kremove("good_list");
 					kremove("goods");
 				});
+				$("#jiesuan").click(function(){
+					var config=JSON.parse(kget("config"));
+					var user=JSON.parse(kget("user"));
+					var goods=JSON.parse(kget("good_list"));
+					$.ajax({
+						url:"http://"+config[0]+"/api/jiesuan_ajax.php",
+						data:{user:user,config:JSON.stringify(config),goods:goods},
+						type:'post',
+						dataType:'json',
+						success:function(data){
+							if(data.flag==1){
+								//$.mobile.changePage( "#jiesuan_s", { role: "dialog" } );
+								//$("#success").text(data.msg);
+								alert(data.msg);
+								kremove("user");
+								kremove("good_list");
+								kremove("goods");
+								window.location.href="index.html"; 
+								
+							}else{
+								$.mobile.changePage( "#dialog_e", { role: "dialog" } );
+								$("#error").text(data.msg);
+							}
+						}
+					});
+				});
 			});
 		</script>
         <title>欧华百货移动结算系统</title>
@@ -170,9 +196,9 @@
 			</div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
-				<div class="foot_b"><a   id="jiesuan" data-role="button" data-transition="pop" >结算</a></div>
-				<div class="foot_b" style="margin-top:15px;">总计：<span id="now_totle"></span>&euro;</div>
-				<div class="foot_b" style="float:right;"><a  class="foot_b" id="logout" href="index.html" data-ajax='false' data-icon="delete" class="ui-btn-right" data-role="button">退出系统</a></div>
+				<div class="foot_b"><a id="jiesuan" data-role="button" data-transition="pop" >&nbsp;结算&nbsp;</a></div>
+				<div class="foot_b" style="margin-top:15px; margin-left:10px;">总计：<span id="now_totle"></span>&euro;</div>
+				<div style=" float:right;"><a  id="logout" href="index.html" data-ajax='false' data-role="button" >退出系统</a></div>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 	<div data-role="page" id="dialog">
@@ -182,7 +208,7 @@
 		<div role="main" class="ui-content">
         	<div>是否确定删除<span id="tiaoma"></span>？</div>
         	<div>
-                <a id="dialog_si" href="index.html" data-ajax="false" class="ui-btn ui-btn-inline">确定</a>
+                <a id="dialog_si" href="main.html" data-ajax="false" class="ui-btn ui-btn-inline">确定</a>
                 <a href="#main" class="ui-btn ui-btn-inline">取消</a>
             </div>
 		</div><!-- /content -->
@@ -196,6 +222,17 @@
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
 			<div id="error"></div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="jiesuan_s">
+		<div data-role="header">
+			<h1>结算成功</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div id="success"></div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>

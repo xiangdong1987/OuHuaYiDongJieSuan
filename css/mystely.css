@@ -73,7 +73,10 @@ background-color: #80FF80;
 	font-size:12px;
 	float:left;
 }
-
+#logout{
+	color: #FFF;
+	background-color: #F88
+}
 .saomiao input{
 	width:50%;
 	
