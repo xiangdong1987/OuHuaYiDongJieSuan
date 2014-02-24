@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
+		<head>
+		<meta charset="utf-8" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1"/>
 		<!-- 引入 自己的css-->
 		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
@@ -86,6 +86,11 @@
 									$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
 									$("#now_piva").text(now_piva);
 									$("#now_totle").text(now_totle);
+								}else if(data.flag > 1){
+									$.each(data.custom,function(){
+										$("#user_view").append("<li id='"+this.id+"' title='"+this.W_NameCn+"["+this.W_NameIt+"]' ><div>"+this.W_NameCn+"["+this.W_NameIt+"]</div><div>P.iva:"+this.W_Piva+"</div><div>Tele:"+this.W_Tele+"</div></li>").trigger("pagecreate");
+									});
+									$.mobile.changePage("#select_u", "fade"); 
 								}else{
 									$.mobile.loading('hide');
 									$("#login_test p").text(data.msg);	
@@ -107,42 +112,88 @@
 					});
 					signIn();
 				});
-			});
 
+			});
+			$(document).on("pageinit","#select_u",function(){
+				$("#select_u li").click(function(){
+					var id=this.id;
+					var config=JSON.parse(kget("config"));
+					$.ajax({ 
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{username:"",id:id,config:JSON.stringify(config)},
+						type:'post',
+						dataType:'json',
+						success: function(data){
+							kset("user",JSON.stringify(data.custom));
+							//kclear();
+							window.location.href="main.html"; 
+							//$.mobile.changePage("#main", "fade"); 
+							var user=JSON.parse(kget("user"));
+							var now_piva=user.W_Piva;
+							var now_totle="0";
+							$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+							$("#now_piva").text(now_piva);
+							$("#now_totle").text(now_totle);
+						}
+					});
+				});	
+			});
 		</script>
-        <title>欧华百货移动结算系统</title>
-    </head>
-    <body>
-	<div data-role="page" id="index_login" style="background-color: #81C2F8;">
-		<div data-role="header">
-			<a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>
-			<h1>欧华百货移动结算系统</h1>
-		</div><!-- /header -->
-		<div role="main" class="ui-content">
-			<div id="login_test">
-				<div><img src="./img/logo.png" width="70px" height="70" /></div>
-				<p>欧华百货移动结算系统</p>
-			</div>
-				<input id="username" name="username" type="text" placeholder="P.iva" />
-			<button id="login" >进入系统</button>
-		</div><!-- /content -->
-		<div data-role="footer" data-position="fixed">
-			<h4>欧华科技2010-2014</h4>
-		</div><!-- /footer -->
-	</div><!-- /page -->
-	<div data-role="page" id="dialog_c">
-		<div data-role="header">
-			<h1>配置</h1>
-		</div><!-- /header -->
-		<div role="main" class="ui-content">
-        	<div>设备必须初始化，请点击进去配置页面!</div>
-        	<div>
-                <a  href="config.html" data-ajax="false" class="ui-btn ui-btn-inline">进入</a>
+		<title>欧华百货移动结算系统</title>
+		</head>
+		<body>
+        <div data-role="page" id="index_login" style="background-color: #81C2F8;">
+          <div data-role="header"> <a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>
+            <h1>欧华百货移动结算系统</h1>
+          </div>
+          <!-- /header -->
+          <div role="main" class="ui-content">
+            <div id="login_test">
+              <div><img src="./img/logo.png" width="70px" height="70" /></div>
+              <p>欧华百货移动结算系统</p>
             </div>
-		</div><!-- /content -->
-		<div data-role="footer" data-position="fixed">
-			<h4>欧华科技2010-2014</h4>
-		</div><!-- /footer -->
-	</div><!-- /page -->
-    </body>
+            <input id="username" name="username" type="text" placeholder="P.iva" />
+            <button id="login" >进入系统</button>
+          </div>
+          <!-- /content -->
+          <div data-role="footer" data-position="fixed">
+            <h4>欧华科技2010-2014</h4>
+          </div>
+          <!-- /footer --> 
+        </div>
+        <!-- /page -->
+        <div data-role="page" id="dialog_c">
+          <div data-role="header">
+            <h1>配置</h1>
+          </div>
+          <!-- /header -->
+          <div role="main" class="ui-content">
+            <div>设备必须初始化，请点击进去配置页面!</div>
+            <div> <a  href="config.html" data-ajax="false" class="ui-btn ui-btn-inline">进入</a> </div>
+          </div>
+          <!-- /content -->
+          <div data-role="footer" data-position="fixed">
+            <h4>欧华科技2010-2014</h4>
+          </div>
+          <!-- /footer --> 
+        </div>
+        <!-- /page -->
+        <div data-role="page" id="select_u">
+		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
+		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+          <div data-role="header">
+            <h1>选择用户：</h1>
+          </div>
+          <!-- /header -->
+          <div role="main" class="ui-content">
+            <div id="user_list">
+              <ul id="user_view" data-role="listview">
+
+              </ul>
+            </div>
+          </div>
+          <!-- /content --> 
+        </div>
+        <!-- /page -->
+</body>
 </html>
