@@ -17,24 +17,18 @@
 			});
 			
 			$(document).on("pageinit","#main",function(){
-				//监控数字键
-				 $("#numero").focus(function() {
-					 // 绑定键盘按下事件
-					$(document).keydown(function(e) {
-						if(e.which == 13){
+				//监控按键
+				$(document).keydown(function(e) {
+					if(e.which == 13){
+						var id =$("input:focus").attr("id"); 
+						//alert(id);
+						if(id == "numero"){
 							$("#Barcode").focus();
+						}else{
+							$("#numero").focus();	
 						}
-					});
-				 });
-				//监控条码
-				 $("#Barcode").focus(function() {
-					 // 绑定键盘按下事件
-					$(document).keydown(function(e) {
-						if(e.which == 13){
-							$("#numero").focus();
-						}
-					});
-				 });
+					}
+				});
 				//统计产品并输出
 				function count_good(){
 					var good_list=JSON.parse(kget("good_list"));
