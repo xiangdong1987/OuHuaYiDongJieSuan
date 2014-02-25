@@ -7,6 +7,7 @@
 		<!-- 引入 自己的css-->
 		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
+		<script type="text/javascript" charset="utf-8" src="./js/cordova-2.0.0.js"></script>
 		<script src="./js/jquery.js"></script>
 		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
 		<script src="./js/store.js"></script>
@@ -62,7 +63,7 @@
 						data:{config:JSON.stringify(config)},
 						type:'post',
 						dataType:'json',
-						timeout:3000, 
+						timeout:30000, 
 						success:function(data){
 							console.log(data);
 							if(data.flag_conect==1){
