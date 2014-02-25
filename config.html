@@ -28,8 +28,38 @@
 						$("#dbname").val(config[3]);
 					}
 				}
-				
+				//连接测试
+				//connect_test();
+				function connect_test(){
+					//获取连接数据
+					var config=JSON.parse(kget("config"));
+					$.ajax({
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{config:JSON.stringify(config)},
+						type:'post',
+						dataType:'json',
+						timeout:3000, 
+						success:function(data){
+							console.log(data);
+							if(data.flag_conect==1){
+								window.location.href="index.html"; 
+							}else{
+								$.mobile.loading('hide');
+								alert("服务器连接数据库失败，请检查数据库配置。");	
+							}
+						}
+					}).fail(function(jqXHR,textStatus ) {
+						alert("服务器连接超时，请检查服务器ip地址时候正确。");
+					});
+				}
 				$("#save_config").click(function(){
+					//显示保存中
+					$.mobile.loading( 'show', {
+						text: '保存中...',
+						textVisible: true,
+						theme: 'a',
+						html: ""
+					});
 					var ip=$("#ip").val();
 					var loginname=$("#loginname").val();
 					var password=$("#password").val();
@@ -41,31 +71,32 @@
 						config["2"]=password;
 						config["3"]=dbname;
 						//alert(JSON.stringify(config));
-						kset("config",JSON.stringify(config));
-						$("#error").text("保存成功");
+						$.ajax({
+							url:"http://"+config[0]+"/api/login_ajax.php",
+							data:{config:JSON.stringify(config)},
+							type:'post',
+							dataType:'json',
+							timeout:3000, 
+							success:function(data){
+								console.log(data);
+								if(data.flag_conect==1){
+									$.mobile.loading('hide');
+									kset("config",JSON.stringify(config));
+									alert("配置成功，数据库连接成功。");
+									window.location.href="index.html"; 
+								}else{
+									$.mobile.loading('hide');
+									alert("服务器连接数据库失败，请检查数据库配置。");	
+								}
+							}
+						}).fail(function(jqXHR,textStatus ) {
+							alert("服务器连接超时，请检查服务器ip地址时候正确。");
+						});
+						//kset("config",JSON.stringify(config));
 					}else{
 						$("#error").text("所有项目为必填字段，否则无法连接数据库。");
 					}
 				});
-				function connect_test(){
-					//获取连接数据
-					var config=JSON.parse(kget("config"));
-					$.ajax({
-						url:"http://"+config[0]+"/api/login_ajax.php",
-						data:{config:JSON.stringify(config)},
-						type:'post',
-						dataType:'json',
-						success:function(data){
-							if(data.flag_conect==1){
-								$.mobile.loading('hide');
-								$("#error").text("配置成功，数据库连接成功。");
-							}else{
-								$.mobile.loading('hide');
-								$("#error").text("服务器连接数据库失败，请检查数据库配置。");	
-							}
-						}
-					});
-				}
 			});
 
 		</script>
@@ -84,10 +115,11 @@
 			<div id="error"></div>
 			<div>
 				<input id="ip" name="ip" type="text" value="" placeholder="服务器ip" />
+				<input id="dbname" name="dbname" type="text" value="" placeholder="数据库名称" />
 				<input id="loginname" name="loginname" type="text" value="" placeholder="数据库登录名" />
 				<input id="password" name="password" type="text" value="" placeholder="数据库密码" />
-				<input id="dbname" name="dbname" type="text" value="" placeholder="数据库名称" />
-				<a data-role="button" data-inline="true" id="save_config" >保存</a>
+
+				<a data-role="button" id="save_config" >保存</a>
 			</div>
 		</div><!-- /content -->
 	</div><!-- /page -->

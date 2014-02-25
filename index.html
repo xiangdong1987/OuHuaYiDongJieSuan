@@ -25,7 +25,37 @@
 						window.location.href="config.html"; 
 					}else{
 						islogin();
+						connect_test()
+
 					}
+				}
+				//连接测试
+				function connect_test(){
+					//获取连接数据
+					var config=JSON.parse(kget("config"));
+					$.ajax({
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{config:JSON.stringify(config)},
+						type:'post',
+						dataType:'json',
+						timeout:3000, 
+						success:function(data){
+							console.log(data);
+							if(data.flag_conect==1){
+								//window.location.href="index.html"; 
+								//return true;
+							}else{
+								$.mobile.loading('hide');
+								alert("服务器连接数据库失败，请检查数据库配置。");	
+								window.location.href="config.html"; 
+								//return false;
+							}
+						}
+					}).fail(function(jqXHR,textStatus ) {
+						alert("服务器连接超时，请检查服务器ip地址时候正确。");
+						window.location.href="config.html"; 
+						//return false;
+					});
 				}
 				//登录验证
 				function islogin(){
@@ -168,14 +198,15 @@
 		</head>
 		<body>
         <div data-role="page" id="index_login" style="background-color: #81C2F8;">
-          <div data-role="header"> <a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>
-            <h1>欧华百货移动结算系统</h1>
+          <div data-role="header"> 
+		 <!-- <a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>-->
+            <h1>欧华移动结算系统</h1>
           </div>
           <!-- /header -->
           <div role="main" class="ui-content">
             <div id="login_test">
               <div><img src="./img/logo.png" width="70px" height="70" /></div>
-              <p>欧华百货移动结算系统</p>
+              <p>欧华移动结算系统</p>
             </div>
             <input id="username" name="username" type="text" placeholder="输入用户信息" />
             <button id="login" >进入系统</button>

@@ -29,6 +29,16 @@
 						}
 					}
 				});
+				//输入监控
+				$("#numero").keypress(function(event) {
+					var keyCode = event.which;
+					if (keyCode == 46 || (keyCode >= 48 && keyCode <=57))
+						return true;
+					else
+						return false;
+				}).focus(function() {
+					this.style.imeMode='disabled';
+				});
 				//统计产品并输出
 				function count_good(){
 					var good_list=JSON.parse(kget("good_list"));
@@ -37,7 +47,7 @@
 						$.each(good_list,function(){
 							var xiaoji=this.numero*this.S_final;
 							//$("#good_view").append("<div class='ui-block-a'><div class='ui-bar ui-bar-a' style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div></div><div class='ui-block-b'><div class='ui-bar ui-bar-a'>"+this.S_final+"</div></div><div class='ui-block-c'><div class='ui-bar ui-bar-a'>"+this.numero+"</div></div><div class='ui-block-d'><div class='ui-bar ui-bar-a'>"+xiaoji.toFixed(2)+"</div></div>");
-							$("#good_view").append("<li id='"+this.Barcode+"'><div class='goodright'><div>"+this.Barcode+"</div><div style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div><div>"+this.NameCn+"</div></div><div id='d_"+this.Barcode+"' class='goodleft'><div>价格："+this.S_final+"</div><div>数量："+this.numero+"</div><div>小计："+xiaoji.toFixed(2)+"</div></div><div id='i"+this.Barcode+"' class='shanchu'><a href='#dialog'><img src='./img/delete.png' width='39px' height='50px'/></a></div></li>");
+							$("#good_view").append("<li class='ui-li-static ui-body-inherit' ><div id='"+this.Barcode+"' class='goodright' ><div>"+this.Barcode+"</div><div style='overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>"+this.NameIt+"</div><div>"+this.NameCn+"</div></div><div tmh='"+this.Barcode+"' id='d_"+this.Barcode+"' class='goodleft'><div>价格："+this.S_final+"</div><div>数量："+this.numero+"</div><div>小计："+xiaoji.toFixed(2)+"</div></div><div id='i"+this.Barcode+"' tmh1='"+this.Barcode+"'  class='shanchu'><a href='#dialog'><img src='./img/delete.png' width='39px' height='50px'/></a></div></li>");
 							totle=totle+xiaoji;
 						});
 					}
@@ -47,20 +57,24 @@
 				}
 				count_good();
 				//左右滑动事件
-				$("li").on("swipeleft",function(){
+				$(".goodleft").on("swipeleft",function(){
 				  	//$.mobile.changePage( "#dialog", { role: "dialog" } );
-					$("#tiaoma").text(this.id);
-					$("#d_"+this.id).hide(500);
-					$("#i"+this.id).show(500);
+					var tmh=$("#"+this.id).attr("tmh");
+					$("#tiaoma").text(tmh);
+					//alert(tmh);
+					$("#d_"+tmh).hide();
+					$("#i"+tmh).show();
 				});
-				$("li").on("swiperight",function(){
+				$(".shanchu").on("swiperight",function(){
 				  	//$.mobile.changePage( "#dialog", { role: "dialog" } );
-					$("#tiaoma").text(this.id);
-					$("#d_"+this.id).show(500);
-					$("#i"+this.id).hide(500);
+					var tmh=$("#"+this.id).attr("tmh1");
+					$("#tiaoma").text(tmh);
+					//alert(tmh);
+					$("#d_"+tmh).show();
+					$("#i"+tmh).hide();
 				});
 				//点击事件
-				$("li").on("click",function(){
+				$(".goodright").on("click",function(){
 				  	$.mobile.changePage( "#xiangxi", { role: "dialog" } );
 					var Barcode=this.id;
 					var good_list=JSON.parse(kget("good_list"));
@@ -110,9 +124,10 @@
 								if(data.flag == "1"){
 									$.mobile.loading('hide');
 									var good_list=new Array();
-									var numero=$("#numero").val();
-									if(numero=="" ||numero==0){
-										$("#error").text("数字不能为空或者0。");
+									var numero=parseInt($("#numero").val());
+									//alert(numero);
+									if(isNaN(numero)||numero==0){
+										$("#error").text("输入的不为数字，或者数字为0，请重新输入。");
 										$.mobile.changePage( "#dialog_e", {role:"dialog"} );
 									}else{
 										good_list_old=JSON.parse(kget("good_list"));
@@ -216,19 +231,60 @@
 						}
 					}
 				});
+				//确定按钮
+				$("#save_number").click(function(){
+					//alert(id);
+					var Barcode= $("#txm").text();
+					var numero=$("#shuliang").val();
+					if(!isNaN(numero)&&numero!=0){
+						var good_list=JSON.parse(kget("good_list"));
+						$.each(good_list,function(i){
+							 if(this.Barcode==Barcode){
+								this.numero=numero;
+							 }
+						});
+						kset("good_list",JSON.stringify(good_list));
+						window.location.href="main.html"; 
+					}else{
+						$.mobile.changePage( "#dialog_e", { role: "dialog"} );
+						$("#error").text("不是数字或者数字为0");
+					}
+				});
+				//输入监控
+				$("#shuliang").on("keyup",function(){
+					var xiaoji=$("#shuliang").val()*$("#price").text();
+					xiaoji=parseFloat(xiaoji);
+					$("#xiaoji").text(xiaoji.toFixed(2));
+				});
+				$("#shuliang").keypress(function(event) {
+					var keyCode = event.which;
+					if (keyCode == 46 || (keyCode >= 48 && keyCode <=57)){
+						return true;
+					}else{
+						return false;
+					}	
+				}).focus(function() {
+					this.style.imeMode='disabled';
+				});
 			});
 		</script>
         <title>欧华百货移动结算系统</title>
     </head>
     <body>
-	<div data-role="page" id="main"style="background-color: #80FF80;" >
+	<div data-role="page" id="main" >
 		<div data-role="header"  data-position="fixed">
 			<div class="user_info">
 			  <div><span>用户：</span><span id="now_user"></span></div>
             </div>
 			<div class="saomiao" >
-				<input id="numero" name="numero" type="text" data-role="none" placeholder="Numero" style="float:left;width:48%" />
-				<input id="Barcode" name="barcode" type="text" data-role="none" placeholder="Barcode" style="float:left;width:48%"/>
+			   <div class="ui-grid-a">
+				 <div class="ui-block-a">
+					<input id="numero" name="numero" type="number"  placeholder="Numero" />
+				 </div>
+				 <div class="ui-block-b">
+					<input id="Barcode" name="barcode" type="text"  placeholder="Barcode"/>
+				 </div>
+			   </div>
 				<div class="clear"></div>
 			</div>
 		</div><!-- /header -->
@@ -298,7 +354,7 @@
 			</div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
-			<h4>欧华科技2013-2014</h4>
+			 <a id="save_number" href="#" data-ajax="false">确定</a>
 		</div><!-- /footer -->
 	</div><!-- /page -->
     </body>

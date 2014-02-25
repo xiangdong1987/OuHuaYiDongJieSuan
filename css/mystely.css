@@ -3,7 +3,7 @@
 .user_info{
 background-attachment: scroll;
 background-clip: border-box;
-background-color: #81C2F8;
+
 background-image: none;
 background-origin: padding-box;
 background-position: 0% 0%;
@@ -53,17 +53,10 @@ margin-left:10px;
 }
 .goodright{ 
 height:50px; width:60%; float:left;
-border-style:solid;
-border-width:1px;
-border-color: #fff;
-background-color: #80FF80;	
+
 }
 .goodleft{
 height:50px; width:39%; float:left;
-border-style:solid;
-border-width:1px;
-border-color: #fff;
-background-color: #80FF80;	
 }
 .shanchu{height:50px; width:39%; float:left; display:none;}
 .shanchu img{float:right}
