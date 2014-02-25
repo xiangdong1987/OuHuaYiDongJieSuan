@@ -17,6 +17,61 @@
 			});
 			
 			$(document).on("pageinit","#main",function(){
+				isconfig();
+				function isconfig(){
+					var config = window.localStorage.getItem("config");
+					if(config == null){
+						window.location.href="config.html"; 
+					}else{
+						islogin();
+						connect_test();
+					}
+				}
+				//连接测试
+				function connect_test(){
+					//获取连接数据
+					var config=JSON.parse(kget("config"));
+					$.ajax({
+						url:"http://"+config[0]+"/api/login_ajax.php",
+						data:{config:JSON.stringify(config)},
+						type:'post',
+						dataType:'json',
+						timeout:30000, 
+						error: function(){
+							alert("服务器请求超时，请检查服务器ip是否正确。");	
+							window.location.href="config.html"; 
+						}, 
+						success:function(data){
+							console.log(data);
+							if(data.flag_conect==1){
+								//window.location.href="index.html"; 
+								//return true;
+							}else{
+								$.mobile.loading('hide');
+								alert("服务器连接数据库失败，请检查数据库配置。");	
+								window.location.href="config.html"; 
+								//return false;
+							}
+						}
+					});
+				}
+				//登录验证
+				function islogin(){
+					var user = window.localStorage.getItem("user");
+					if(user != null){
+						//跳转
+						//$.mobile.changePage("main.html", "fade"); 
+						//window.location.href="main.html"; 
+						var user=JSON.parse(kget("user"));
+						var now_piva=user.W_Piva;
+						var now_totle="0";
+						$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
+						$("#now_piva").text(now_piva);
+						$("#now_totle").text(now_totle);
+					}else{
+						$.mobile.changePage("#index_login", "fade"); 
+					}
+				}
 				//监控按键
 				$(document).keydown(function(e) {
 					if(e.which == 13){

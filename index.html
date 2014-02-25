@@ -11,11 +11,35 @@
 		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
 		<script src="./js/store.js"></script>
 		<script  type="text/javascript" >
+			// 等待加载PhoneGap
+		    document.addEventListener("deviceready", onDeviceReady, false);// PhoneGap加载完毕
+			function onDeviceReady() {
+				document.addEventListener("backbutton", eventBackButton, false); //按钮事件,返回键
+			}
+			//返回键
+			function eventBackButton(){
+				showConfirm();
+			}
+			// callback function
+			function onConfirm(button) {
+			// if press 'Yes'
+			   if (button === 1){
+				  navigator.app.exitApp();
+			   }
+			}
+			// PhoneGap Notification 提供的 Confirm API
+			function showConfirm() {
+			   navigator.notification.confirm(
+				   '確定要离开么?',  // message
+				   onConfirm,            // callback function
+				   '标题',               // title
+				   'Yes,No'              // confirm 選項，用逗號隔開
+			   );
+			}
 			$( document ).bind( "mobileinit", function() {
 			   $.support.cors = true;   
 			   $.mobile.allowCrossDomainPages = true;
 			});
-			
 			$(document).on("pageinit","#index_login",function(){
 				//kclear();
 				isconfig();

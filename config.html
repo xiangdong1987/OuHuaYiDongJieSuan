@@ -28,30 +28,6 @@
 						$("#dbname").val(config[3]);
 					}
 				}
-				//连接测试
-				//connect_test();
-				function connect_test(){
-					//获取连接数据
-					var config=JSON.parse(kget("config"));
-					$.ajax({
-						url:"http://"+config[0]+"/api/login_ajax.php",
-						data:{config:JSON.stringify(config)},
-						type:'post',
-						dataType:'json',
-						timeout:3000, 
-						success:function(data){
-							console.log(data);
-							if(data.flag_conect==1){
-								window.location.href="index.html"; 
-							}else{
-								$.mobile.loading('hide');
-								alert("服务器连接数据库失败，请检查数据库配置。");	
-							}
-						}
-					}).fail(function(jqXHR,textStatus ) {
-						alert("服务器连接超时，请检查服务器ip地址时候正确。");
-					});
-				}
 				$("#save_config").click(function(){
 					//显示保存中
 					$.mobile.loading( 'show', {
@@ -77,6 +53,12 @@
 							type:'post',
 							dataType:'json',
 							timeout:3000, 
+							error: function(){
+								$.mobile.loading('hide');
+								alert("服务器请求超时，请检查服务器ip是否正确。");
+								$.mobile.changePage("config.html", "fade"); 								
+								//window.location.href="config.html"; 
+							}, 
 							success:function(data){
 								console.log(data);
 								if(data.flag_conect==1){
@@ -89,11 +71,11 @@
 									alert("服务器连接数据库失败，请检查数据库配置。");	
 								}
 							}
-						}).fail(function(jqXHR,textStatus ) {
-							alert("服务器连接超时，请检查服务器ip地址时候正确。");
 						});
+						//$.mobile.loading('hide');
 						//kset("config",JSON.stringify(config));
 					}else{
+						$.mobile.loading('hide');
 						$("#error").text("所有项目为必填字段，否则无法连接数据库。");
 					}
 				});
