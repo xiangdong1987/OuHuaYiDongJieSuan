@@ -46,6 +46,7 @@
 					$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
 				}
 				count_good();
+				//左右滑动事件
 				$("li").on("swipeleft",function(){
 				  	//$.mobile.changePage( "#dialog", { role: "dialog" } );
 					$("#tiaoma").text(this.id);
@@ -57,6 +58,22 @@
 					$("#tiaoma").text(this.id);
 					$("#d_"+this.id).show(500);
 					$("#i"+this.id).hide(500);
+				});
+				//点击事件
+				$("li").on("click",function(){
+				  	$.mobile.changePage( "#xiangxi", { role: "dialog" } );
+					var Barcode=this.id;
+					var good_list=JSON.parse(kget("good_list"));
+					$.each(good_list,function(i){
+						 var xiaoji=this.numero*this.S_final;
+						 if(this.Barcode==Barcode){
+							$("#txm").text(this.Barcode);
+							$("#name").text(this.NameIt+"["+this.NameCn+"]");
+							$("#price").text(this.S_final);
+							$("#shuliang").val(this.numero);
+							$("#xiaoji").text(xiaoji.toFixed(2));
+						 }
+					});
 				});
 				$("#dialog_si").click(function(){
 					var good_list=JSON.parse(kget("good_list"));
@@ -96,7 +113,7 @@
 									var numero=$("#numero").val();
 									if(numero=="" ||numero==0){
 										$("#error").text("数字不能为空或者0。");
-										$.mobile.changePage( "#dialog_e", { role: "dialog" } );
+										$.mobile.changePage( "#dialog_e", {role:"dialog"} );
 									}else{
 										good_list_old=JSON.parse(kget("good_list"));
 										//alert(good);
@@ -130,7 +147,7 @@
 								}else{
 									$("#good_info").hide();
 									$.mobile.loading('hide');
-									$.mobile.changePage( "#dialog_e", { role: "dialog" } );
+									$.mobile.changePage( "#dialog_e", { role: "dialog"} );
 									$("#error").text(data.msg);	
 								}
 							}
@@ -166,11 +183,38 @@
 								window.location.href="index.html"; 
 								
 							}else{
-								$.mobile.changePage( "#dialog_e", { role: "dialog" } );
+								$.mobile.changePage( "#dialog_e", { role: "dialog"} );
 								$("#error").text(data.msg);
 							}
 						}
 					});
+				});
+			});
+			$(document).on("pageshow","#xiangxi",function(){
+				//$("#shuliang").focus();
+				$(document).keydown(function(e) {
+					if(e.which == 13){
+						var id =$("input:focus").attr("id"); 
+						//alert(id);
+						if(id == "shuliang"){
+							var Barcode= $("#txm").text();
+							var numero=$("#shuliang").val();
+							if(!isNaN(numero)&&numero!=0){
+								var good_list=JSON.parse(kget("good_list"));
+								$.each(good_list,function(i){
+									 if(this.Barcode==Barcode){
+										this.numero=numero;
+									 }
+								});
+								kset("good_list",JSON.stringify(good_list));
+								window.location.href="main.html"; 
+								
+							}else{
+								$.mobile.changePage( "#dialog_e", { role: "dialog"} );
+								$("#error").text("不是数字或者数字为0");
+							}
+						}
+					}
 				});
 			});
 		</script>
@@ -233,6 +277,25 @@
 		</div><!-- /header -->
 		<div role="main" class="ui-content">
 			<div id="success"></div>
+		</div><!-- /content -->
+		<div data-role="footer" data-position="fixed">
+			<h4>欧华科技2013-2014</h4>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	<div data-role="page" id="xiangxi">
+		<div data-role="header">
+			<h1>产品详细信息</h1>
+		</div><!-- /header -->
+		<div role="main" class="ui-content">
+			<div>
+			    <ul data-role="listview">
+				  <li id="txm"></li>
+				  <li id="name"></li>
+				  <li id="price"></li>
+				  <li> <input type="text" name="shuliang" id="shuliang"></li>
+				  <li id="xiaoji"></li>
+				</ul>
+			</div>
 		</div><!-- /content -->
 		<div data-role="footer" data-position="fixed">
 			<h4>欧华科技2013-2014</h4>
