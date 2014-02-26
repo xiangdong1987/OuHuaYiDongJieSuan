@@ -7,40 +7,38 @@
 		<!-- 引入 自己的css-->
 		<link rel="stylesheet" type="text/css" href="./css/mystely.css" />
 		<link rel="stylesheet" href="./css/jquery.mobile-1.4.1.min.css" />
-		<script type="text/javascript" charset="utf-8" src="./js/cordova-2.0.0.js"></script>
 		<script src="./js/jquery.js"></script>
 		<script src="./js/jquery.mobile-1.4.1.min.js"></script>
 		<script src="./js/store.js"></script>
 		<script  type="text/javascript" >
 			// 等待加载PhoneGap
-		    document.addEventListener("deviceready", onDeviceReady, false);// PhoneGap加载完毕
-			function onDeviceReady() {
-				document.addEventListener("backbutton", eventBackButton, false); //按钮事件,返回键
+			function init() {
+				document.addEventListener("deviceready", onDeviceReady, false);
+				// PhoneGap is loaded and it is now safe to make calls PhoneGap methods
+				function onDeviceReady() {
+					// 注册回退按钮事件监听器
+					document.addEventListener("backbutton", onBackKeyDown, false); //返回键
+				}  
+				function onConfirm(button) {
+					//alert('You selected button ' + button);
+					if(button==1) navigator.app.exitApp(); //选择了确定才执行退出
+				}
+				// Show a custom confirmation dialog
+				function onBackKeyDown() {
+					navigator.notification.confirm(
+						'按确定退出程序!',  // message
+						onConfirm,              // callback to invoke with index of button pressed
+						'确定要退出程序吗?',            // title
+						'确定,取消'          // buttonLabels
+					);
+				}
 			}
-			//返回键
-			function eventBackButton(){
-				showConfirm();
-			}
-			// callback function
-			function onConfirm(button) {
-			// if press 'Yes'
-			   if (button === 1){
-				  navigator.app.exitApp();
-			   }
-			}
-			// PhoneGap Notification 提供的 Confirm API
-			function showConfirm() {
-			   navigator.notification.confirm(
-				   '確定要离开么?',  // message
-				   onConfirm,            // callback function
-				   '标题',               // title
-				   'Yes,No'              // confirm 選項，用逗號隔開
-			   );
-			}
+		    //document.addEventListener("deviceready", onDeviceReady, false);// PhoneGap加载完毕
 			$( document ).bind( "mobileinit", function() {
 			   $.support.cors = true;   
 			   $.mobile.allowCrossDomainPages = true;
 			});
+
 			$(document).on("pageinit","#index_login",function(){
 				//kclear();
 				isconfig();
@@ -50,38 +48,9 @@
 						window.location.href="config.html"; 
 					}else{
 						islogin();
-						connect_test()
-
 					}
 				}
-				//连接测试
-				function connect_test(){
-					//获取连接数据
-					var config=JSON.parse(kget("config"));
-					$.ajax({
-						url:"http://"+config[0]+"/api/login_ajax.php",
-						data:{config:JSON.stringify(config)},
-						type:'post',
-						dataType:'json',
-						timeout:30000, 
-						success:function(data){
-							console.log(data);
-							if(data.flag_conect==1){
-								//window.location.href="index.html"; 
-								//return true;
-							}else{
-								$.mobile.loading('hide');
-								alert("服务器连接数据库失败，请检查数据库配置。");	
-								window.location.href="config.html"; 
-								//return false;
-							}
-						}
-					}).fail(function(jqXHR,textStatus ) {
-						alert("服务器连接超时，请检查服务器ip地址时候正确。");
-						window.location.href="config.html"; 
-						//return false;
-					});
-				}
+				islogin();
 				//登录验证
 				function islogin(){
 					var user = window.localStorage.getItem("user");
@@ -95,7 +64,9 @@
 						$("#now_user").text(user.W_NameCn+"["+user.W_NameIt+"]");	
 						$("#now_piva").text(now_piva);
 						$("#now_totle").text(now_totle);
+						//return true;
 					}else{
+						//return false;
 						$.mobile.changePage("#index_login", "fade"); 
 					}
 				}
@@ -122,6 +93,11 @@
 						data:{username:$('#username').val(),config:JSON.stringify(config)},
 						type:'post',
 						dataType:'json',
+						error: function(){
+								$.mobile.loading('hide');
+								alert("服务器请求超时，请检查服务器ip是否正确。");						
+								window.location.href="config.html"; 
+						}, 
 						success:function(data){
 							if(data.flag_conect==1){
 								if(data.flag == "1"){
@@ -179,6 +155,12 @@
 						data:{username:"",id:id,config:JSON.stringify(config)},
 						type:'post',
 						dataType:'json',
+						error: function(){
+							$.mobile.loading('hide');
+							alert("服务器请求超时，请检查服务器ip是否正确。");
+							$.mobile.changePage("config.html", "fade"); 								
+							//window.location.href="config.html"; 
+						}, 
 						success: function(data){
 							kset("user",JSON.stringify(data.custom));
 							//kclear();
@@ -203,6 +185,12 @@
 						data:{username:"",id:id,config:JSON.stringify(config)},
 						type:'post',
 						dataType:'json',
+						error: function(){
+							$.mobile.loading('hide');
+							alert("服务器请求超时，请检查服务器ip是否正确。");
+							$.mobile.changePage("config.html", "fade"); 								
+							//window.location.href="config.html"; 
+						}, 
 						success: function(data){
 							kset("user",JSON.stringify(data.custom));
 							//kclear();
@@ -221,7 +209,7 @@
 		</script>
 		<title>欧华百货移动结算系统</title>
 		</head>
-		<body>
+		<body onload="init();">
         <div data-role="page" id="index_login" style="background-color: #81C2F8;">
           <div data-role="header"> 
 		 <!-- <a href="config.html" data-ajax='false' data-icon="info" class="ui-btn-right" data-role="button">系统配置</a>-->
